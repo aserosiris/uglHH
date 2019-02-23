@@ -575,9 +575,10 @@ export class HomePage {
     }, function(error) {
       alert("Error : " + JSON.stringify(error));
     });
-    this.updateNV()
+    //this.updateNV()
     
   }
+  this.updateNV()
   
 
   
@@ -603,10 +604,11 @@ updateNV(){
       location: 'default'
 }).then((db: SQLiteObject) => {
   console.log("hey oh!")
-  for(var e=0;e<this.notaVenta1.length; e++){
    // console.log(this.notaVenta1[e]['NV_NOTA'])
     var sqlquery2 = "SELECT * FROM tb_hh_nota_detalle"
-    return db.executeSql(sqlquery2,[]).then(res =>{
+    return db.executeSql(sqlquery2,[])
+    
+}).then(res =>{
      // console.log(res.rows.item(0).DN_NOTA)
       this.detalleVenta =[]
       for(var i=0; i<res.rows.length; i++){
@@ -622,31 +624,27 @@ updateNV(){
           DN_IMPORTE:res.rows.item(i).DN_IMPORTE,
           DN_UPLOAD:res.rows.item(i).DN_UPLOAD
         })
-
-
-        if(res.rows.length == this.detalleVenta.length){
-          return this.detalleVenta;
-        }
-        
-         
-          
+      } 
+      if(res.rows.length == this.detalleVenta.length){
+        console.log(this.detalleVenta,'regresa detalle de venta')
+        return this.detalleVenta;
       }
     })
-  }
-  }).then(res =>{
-        console.log(this.detalleVenta,'detalle vta')
-        for(var i=0; i<this.detalleVenta; i++){
-        SqlServer.execute("INSERT INTO TB_HH_NOTA_DETALLE (DN_FECHA,DN_NOTA ,DN_CLAVE,DN_DESCRIPCION,DN_CANTIDAD_PIEZAS,DN_PRECIO,DN_IVA,DN_IEPS,DN_IMPORTE,DN_UPLOAD) VALUES('"+this.detalleVenta[i]["DN_FECHA"]+"','"+this.detalleVenta[i]["DN_NOTA"]+"',"+this.detalleVenta[i]["DN_CLAVE"]+",'"+this.detalleVenta[i]["DN_DESCRIPCION"]+"',"+this.detalleVenta[i]["DN_CANTIDAD_PIEZAS"]+","+this.detalleVenta[i]["DN_PRECIO"]+","+this.detalleVenta[i]["DN_IVA"]+","+this.detalleVenta[i]["DN_IEPS"]+","+this.detalleVenta[i]["DN_IMPORTE"]+","+this.detalleVenta[i]["DN_UPLOAD"]+")"), function(event) {
-          // alert(JSON.stringify(event));
-         // var sqlupdate = `UPDATE tb_hh_nota_detalle SET NV_UPLOAD = 1 WHERE DN_NOTA = ?`
-          //this.db.executeSql(sqlupdate,[this.notaVenta[i]['DN_NOTA']])
+     .then(res =>{
+        
+        for(var f=0; f<this.detalleVenta.length; f++){
+          console.log(this.detalleVenta,'detalle vta')
+        SqlServer.execute("INSERT INTO TB_HH_NOTA_DETALLE (DN_FECHA,DN_NOTA ,DN_CLAVE,DN_DESCRIPCION,DN_CANTIDAD_PIEZAS,DN_PRECIO,DN_IVA,DN_IEPS,DN_IMPORTE,DN_UPLOAD) VALUES('"+this.detalleVenta[f]["DN_FECHA"]+"','"+this.detalleVenta[f]["DN_NOTA"]+"',"+this.detalleVenta[f]["DN_CLAVE"]+",'"+this.detalleVenta[f]["DN_DESCRIPCION"]+"',"+this.detalleVenta[f]["DN_CANTIDAD_PIEZAS"]+","+this.detalleVenta[f]["DN_PRECIO"]+","+this.detalleVenta[f]["DN_IVA"]+","+this.detalleVenta[f]["DN_IEPS"]+","+this.detalleVenta[f]["DN_IMPORTE"]+","+this.detalleVenta[f]["DN_UPLOAD"]+")", function(event) {    
+   
+          alert("Update complete detalle : " + JSON.stringify(event));
          
-         }, function(error) {
-           alert("Error : " + JSON.stringify(error));
-         }
-         this.updateDN();
+        }, function(error) {
+          alert("Error : " + JSON.stringify(error));
+        });
+        
         }
-
+        this.updateDN()
+        
   })
      
 }
@@ -656,9 +654,10 @@ updateDN(){
     name: 'ionicdb.db',
     location: 'default'
 }).then((db: SQLiteObject) => {
+  console.log("llega a update del detalle upload")
   for(var e=0;e<this.detalleVenta.length; e++){
-    var sqlupdate = `UPDATE tb_hh_nota_detalle SET NV_UPLOAD = 1 WHERE DN_NOTA = ?`
-    this.db.executeSql(sqlupdate,[this.detalleVenta[e]['DN_NOTA']])
+    var sqlupdate = `UPDATE tb_hh_nota_detalle SET DN_UPLOAD = 1 WHERE DN_NOTA = ?`
+    db.executeSql(sqlupdate,[this.detalleVenta[e]['DN_NOTA']])
   }
   
 })
