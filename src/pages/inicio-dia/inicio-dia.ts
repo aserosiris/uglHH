@@ -210,13 +210,13 @@ async getJSON(){
           console.log(res);
           this.promos = res.result;});
 
-    const pedidoPromise = this.PedidosProvider.getPedidos().subscribe(res =>{
-      console.log(res)
-      this.pedidos = res.result;});
+   // const pedidoPromise = this.PedidosProvider.getPedidos().subscribe(res =>{
+      //console.log(res)
+     // this.pedidos = res.result;});
     
 
     await Promise.all([cliePromise,prodPromise,precioPromise,precliePromise,rutaPromise,
-      vendedoresPromise,revolver,arregloPromise,cargaPromise,PromoPromise, pedidoPromise]);
+      vendedoresPromise,revolver,arregloPromise,cargaPromise,PromoPromise]);
    }catch(error){
 
     if(error){

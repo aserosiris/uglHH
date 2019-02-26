@@ -168,6 +168,10 @@ export class DescargaListasPage {
     
   }
 
+  irpedidos(){
+    this.navCtrl.setRoot("PedidosPage")
+  }
+
   async doSQL(){
     try{
   await this.getData();
@@ -333,9 +337,7 @@ export class DescargaListasPage {
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
 
-      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_pedidos(PE_FECHA DATE, PE_NUMERO INT, PE_RUTA INT, PE_CLIENTE INT, PE_CLAVE INT, PE_DESCRIPCION TEXT, PE_CONVERSION_PZ REAL, PE_ESTATUS TEXT)',[])
-      .then(res => console.log('Executed SQL'))
-      .catch(e => console.log(e)); 
+      
 
 /*****************************insertar JSON  en SQLITE********************************** */
 
@@ -548,22 +550,7 @@ export class DescargaListasPage {
                        //}
                      }
                  // PEDIDOS
-                 console.log(this.pedidos, 'arreglo pedidos');
-                     for(var i = 0; i<this.pedidos.length; i++){
-                      var PE_FECHA = this.pedidos[i].PE_FECHA;
-                      var PE_NUMERO = this.pedidos[i].PE_NUMERO;
-                      var PE_RUTA = this.pedidos[i].PE_RUTA;
-                      var PE_CLIENTE = this.pedidos[i].PE_CLIENTE;
-                      var PE_CLAVE = this.pedidos[i].PE_CLAVE;
-                      var PE_DESCRIPCION = this.pedidos[i].PE_DESCRIPCION;
-                      var PE_CONVERSION_PZ = this.pedidos[i].PE_CONVERSION_PZ;
-                      var PE_ESTATUS = this.pedidos[i].PE_ESTATUS;
-                      var query13 = "INSERT INTO tb_hh_pedidos(PE_FECHA,PE_NUMERO, PE_RUTA, PE_CLIENTE, PE_CLAVE, PE_DESCRIPCION, PE_CONVERSION_PZ, PE_ESTATUS) VALUES (?,?,?,?,?,?,?,?)";
-                      db.executeSql(query13, [PE_FECHA, PE_NUMERO, PE_RUTA,PE_CLIENTE, PE_CLAVE,PE_DESCRIPCION,PE_CONVERSION_PZ,PE_ESTATUS]).then(function(res) {
-                      }, function (err) {
-                        console.error(err);
-                      });
-                    }
+                 
               
 
                      

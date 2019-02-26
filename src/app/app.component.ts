@@ -36,6 +36,7 @@ export class MyApp {
   db: SQLiteObject;
   notaVenta
   detalleVenta
+  LimpiarPedidos
 
 
 
@@ -184,6 +185,10 @@ export class MyApp {
 
       this.LimpiarDetalleNotas = `DROP TABLE tb_hh_nota_detalle`
       db.executeSql(this.LimpiarDetalleNotas,[])
+
+      this.LimpiarPedidos = 'DROP TABLE tb_hh_pedidos'
+      db.executeSql(this.LimpiarPedidos,[])
+
 
     })
 
