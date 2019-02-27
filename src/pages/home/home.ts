@@ -106,13 +106,13 @@ export class HomePage {
 
   }
   ionViewDidEnter(){
-
+    /*
     SqlServer.testConnection(function(event) {
       alert(JSON.stringify(event));
     }, function(error) {
       alert("Error : " + JSON.stringify(error));
     });				
-    
+    */
 
     
     this.online.getStatus().subscribe(res =>{
@@ -570,7 +570,7 @@ export class HomePage {
       console.log('dentro del for insert')
   SqlServer.execute("INSERT INTO TB_HH_NOTA_VENTA (NV_NOTA, NV_CLIENTE ,NV_RAZON_SOCIAL ,NV_NOMBRE_CLIENTE ,NV_FECHA,NV_RUTA,NV_TIPO_VENTA,NV_SUBTOTAL,NV_IVA,NV_IEPS,NV_RECONOCIMIENTO,NV_TOTAL ,NV_CORPO_CLIENTE,NV_ESTATUS_NOTA,NV_KILOLITROS_VENDIDOS ,NV_UPLOAD)  VALUES('"+this.notaVenta1[e]["NV_NOTA"]+"',"+this.notaVenta1[e]["NV_CLIENTE"]+",'"+this.notaVenta1[e]["NV_RAZON_SOCIAL"]+"','"+this.notaVenta1[e]["NV_NOMBRE_CLIENTE"]+"','"+this.notaVenta1[e]["NV_FECHA"]+"',"+this.notaVenta1[e]["NV_RUTA"]+",'"+this.notaVenta1[e]["NV_TIPO_VENTA"]+"',"+this.notaVenta1[e]["NV_SUBTOTAL"]+","+this.notaVenta1[e]["NV_IVA"]+","+this.notaVenta1[e]["NV_IEPS"]+","+this.notaVenta1[e]["NV_RECONOCIMIENTO"]+","+this.notaVenta1[e]["NV_TOTAL"]+","+this.notaVenta1[e]["NV_CORPO_CLIENTE"]+",'"+this.notaVenta1[e]["NV_ESTATUS_NOTA"]+"',"+this.notaVenta1[e]["NV_KILOLITROS_VENDIDOS"]+","+this.notaVenta1[e]["NV_UPLOAD"]+")", function(event) {    
    
-      alert("Update complete : " + JSON.stringify(event));
+     // alert("Update complete : " + JSON.stringify(event));
      
     }, function(error) {
       alert("Error : " + JSON.stringify(error));
@@ -636,7 +636,7 @@ updateNV(){
           console.log(this.detalleVenta,'detalle vta')
         SqlServer.execute("INSERT INTO TB_HH_NOTA_DETALLE (DN_FECHA,DN_NOTA ,DN_CLAVE,DN_DESCRIPCION,DN_CANTIDAD_PIEZAS,DN_PRECIO,DN_IVA,DN_IEPS,DN_IMPORTE,DN_UPLOAD) VALUES('"+this.detalleVenta[f]["DN_FECHA"]+"','"+this.detalleVenta[f]["DN_NOTA"]+"',"+this.detalleVenta[f]["DN_CLAVE"]+",'"+this.detalleVenta[f]["DN_DESCRIPCION"]+"',"+this.detalleVenta[f]["DN_CANTIDAD_PIEZAS"]+","+this.detalleVenta[f]["DN_PRECIO"]+","+this.detalleVenta[f]["DN_IVA"]+","+this.detalleVenta[f]["DN_IEPS"]+","+this.detalleVenta[f]["DN_IMPORTE"]+","+this.detalleVenta[f]["DN_UPLOAD"]+")", function(event) {    
    
-          alert("Update complete detalle : " + JSON.stringify(event));
+          //alert("Update complete detalle : " + JSON.stringify(event));
          
         }, function(error) {
           alert("Error : " + JSON.stringify(error));

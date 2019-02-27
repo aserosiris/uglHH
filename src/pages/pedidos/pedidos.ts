@@ -9,7 +9,8 @@ import { Storage } from '@ionic/storage';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-//const sqlite3 = require('sqlite3').verbose();
+
+declare var sqlite3: any;
 @IonicPage()
 @Component({
   selector: 'page-pedidos',
@@ -21,7 +22,9 @@ export class PedidosPage {
   rutamail: any;
   pedidosFiltrados: any;
   inventario
-  inventarioAct
+  inventarioAct =[]
+  suma
+  LimpiarPedidos
   
 
   fechaActual=new Date();
@@ -38,23 +41,26 @@ export class PedidosPage {
      private Storage: Storage
      ) {
       this.obtenerRuta()
-      
-
+      this.pedido.getPedidos().subscribe(res =>{
+        console.log(res)
+        this.pedidos = res.result;
+        this.bajarPedido();}
+        );
+      console.log('ionViewDidLoad PedidosPage');
+      console.log(this.fechaHoraFinal)
         this.fechaHoraFinal= this.fechaActual.toISOString().substr(0, 10);
+
+        
 
   }
 
   ionViewDidLoad() {
-    this.pedido.getPedidos().subscribe(res =>{
-      console.log(res)
-      this.pedidos = res.result;});
-    console.log('ionViewDidLoad PedidosPage');
-    console.log(this.fechaHoraFinal)
+    
     
   }
 
   ionViewDidEnter(){
-    this.bajarPedido();
+    
    
   }
 
@@ -129,6 +135,7 @@ showPrompt(){   //ventana emergente para agregar cantidad de piezas
         text: 'No',
         handler: data =>{
           console.log('cancelado');
+          this.limpiarTabla()
         }
     },
     {
@@ -156,35 +163,62 @@ actualizarPedido(){
     console.log(this.pedidosFiltrados.length)
     this.inventario=[]
     for(var i =0; i<this.pedidosFiltrados.length; i++){
-    var query2 = `SELECT DM_CANTIDAD FROM tb_hh_carga_iniciales WHERE DM_CLAVE =?`
+    var query2 = `SELECT IN_CANTIDAD FROM tb_hh_inventario WHERE IN_CLAVE =?`
     db.executeSql(query2,[this.pedidosFiltrados[i].PE_CLAVE])
-    //db.each()   
- 
-    } 
-   
-  })
-  /*
-  .then((db:SQLiteObject) =>{
+    .then(res =>{
+
+      for(var i=0; i<res.rows.length; i++) {
+        this.inventario.push({
+          IN_CANTIDAD:res.rows.item(i).IN_CANTIDAD
+        })
+        console.log(this.inventario, "for en el primer then")
+
+        if(this.inventario.length == this.pedidosFiltrados.length){
+          for(var i = 0; i<this.inventario.length; i++){
+            console.log(this.inventario[i].IN_CANTIDAD)
+            console.log(this.pedidosFiltrados[i].PE_CLAVE)
+            this.suma =0
+            this.suma = this.inventario[i].IN_CANTIDAD + this.pedidosFiltrados[i].PE_CONVERSION_PZ
+            console.log(this.suma)
+            this.inventarioAct.push({IN_CANTIDAD:this.suma})
+          }
+          console.log(this.inventarioAct)
+          return this.inventarioAct
+        }
+      }
+  }).then(() =>{
     for(var i =0; i<this.pedidosFiltrados.length; i++){
-      this.pedidosFiltrados[i].PE_CONVERSION_PZ =(this.pedidosFiltrados[i].PE_CONVERSION_PZ + this.inventario[i].DM_CANTIDAD)
-      console.log(this.pedidosFiltrados[i].PE_CONVERSION_PZ =(this.pedidosFiltrados[i].PE_CONVERSION_PZ + this.inventario[i].DM_CANTIDAD))
-      var quer1 = `UPDATE tb_hh_carga_iniciales SET (DM_CANTIDAD= ?) WHERE DM_CLAVE =?`
-      db.executeSql(quer1,[this.pedidosFiltrados[i].PE_CONVERSION_PZ,this.pedidosFiltrados[i].PE_CLAVE])
+      console.log(this.inventarioAct,"en el for final")
+      var quer1 = `UPDATE tb_hh_inventario SET IN_CANTIDAD= ? WHERE IN_CLAVE =?`
+      db.executeSql(quer1,[this.inventarioAct[i].IN_CANTIDAD,this.pedidosFiltrados[i].PE_CLAVE]).then(res =>{
+        console.log(res,"update de base de datos termianda")
+        this.LimpiarPedidos = 'DROP TABLE tb_hh_pedidos'
+      db.executeSql(this.LimpiarPedidos,[]).then(() =>{
+        this.navCtrl.setRoot("HomePage");
+      })
+      })
     }
   })
-  */
-}
-
-querySuccess(db, results){
-  for(var i =0; i<this.pedidosFiltrados; i++){
-    this.inventarioAct.push(results.rows.item(i).DM_CANTIDAD)
-  }
-  if(this.inventarioAct.length == this.pedidosFiltrados.length){
-    return this.inventarioAct
-  }
+    }   
+  })
+  
+  
   
 }
 
-
-
+limpiarTabla(){
+  this.sqlite.create({
+    name: 'ionicdb.db',
+      location: 'default'
+  }).then((db:SQLiteObject) =>{
+    this.LimpiarPedidos = 'DROP TABLE tb_hh_pedidos'
+    db.executeSql(this.LimpiarPedidos,[]).then(() =>{
+      this.navCtrl.setRoot("HomePage");
+    })
+  })
 }
+
+
+  
+}
+
