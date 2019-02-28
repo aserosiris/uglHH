@@ -61,7 +61,7 @@ export class MyApp {
       {title: 'Inicio', component:'HomePage', icon:'home'},
       {title: 'Descarga de Listas', component:'InicioDiaPage', icon:'create'},
       {title: 'Lista Clientes', component:'ClientesPage', icon:'list-box'},
-      {title: 'Crear Nota TEST', component:'CreatecompanyPage', icon:'search'},
+      {title: 'PreVenta', component:'PreVentaClientesPage', icon:'search'},
       {title: 'Leaderboard', component:'HomePage', icon:'archive'}
     ];
 

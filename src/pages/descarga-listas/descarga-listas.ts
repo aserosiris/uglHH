@@ -65,6 +65,7 @@ export class DescargaListasPage {
 
   fechaActual=new Date();
   folioIni='';
+  prefolioIni='';
   dia = this.fechaActual.getDate();
   mes = this.fechaActual.getMonth()+1;
   anio = this.fechaActual.getFullYear();
@@ -332,8 +333,16 @@ export class DescargaListasPage {
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_venta(NV_NOTA TEXT, NV_CLIENTE INT, NV_RAZON_SOCIAL TEXT, NV_NOMBRE_CLIENTE TEXT, NV_FECHA DATE, NV_RUTA INT, NV_TIPO_VENTA TEXT, NV_SUBTOTAL REAL, NV_IVA REAL, NV_IEPS REAL, NV_RECONOCIMIENTO REAL, NV_TOTAL REAL, NV_CORPO_CLIENTE INT, NV_ESTATUS_NOTA TEXT, NV_KILOLITROS_VENDIDOS REAL, NV_UPLOAD INT )', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
-
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_detalle(DN_FECHA DATE, DN_NOTA TEXT, DN_CLAVE INT, DN_DESCRIPCION TEXT, DN_CANTIDAD_PIEZAS REAL, DN_PRECIO REAL, DN_IVA REAL, DN_IEPS REAL, DN_IMPORTE REAL, DN_UPLOAD INT)', [])
+      .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e));
+      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_PreVenta(NPV_NOTA TEXT, NPV_CLIENTE INT, NPV_RAZON_SOCIAL TEXT, NPV_NOMBRE_CLIENTE TEXT, NPV_FECHA DATE, NPV_RUTA INT, NPV_TIPO_VENTA TEXT, NPV_SUBTOTAL REAL, NPV_IVA REAL, NPV_IEPS REAL, NPV_RECONOCIMIENTO REAL, NPV_TOTAL REAL, NPV_CORPO_CLIENTE INT, NPV_ESTATUS_NOTA TEXT, NPV_KILOLITROS_VENDIDOS REAL, NPV_UPLOAD INT )', [])
+      .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e))
+      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_PreVentaDetalle(DPN_FECHA DATE, DPN_NOTA TEXT, DPN_CLAVE INT, DPN_DESCRIPCION TEXT, DPN_CANTIDAD_PIEZAS REAL, DPN_PRECIO REAL, DPN_IVA REAL, DPN_IEPS REAL, DPN_IMPORTE REAL, DPN_UPLOAD INT)', [])
+      .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e));
+      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_folioPre(FLP_ULTIMO_FOLIO TEXT)', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
 
@@ -600,14 +609,21 @@ export class DescargaListasPage {
                      {this.rutaStr='0'+this.rutaStr;}
 
                      //Guarda el folio en variable
+
+                     
                      
                      this.folioIni=this.rutaStr+this.diaStr+this.mesStr+this.anioStr+'000';
                      console.log(this.folioIni+ '      ->folio Inicializado');
+                     this.prefolioIni= 'p'+this.folioIni;
+                     console.log(this.prefolioIni+ '      ->prefolio Inicializado');
 
 
                      
                     var query12 = "INSERT INTO tb_hh_folio(FL_ULTIMO_FOLIO)VALUES (?)"
                       db.executeSql(query12,[this.folioIni]);
+                    
+                    var query13 = "INSERT INTO tb_hh_folioPre(FLP_ULTIMO_FOLIO)VALUES (?)"
+                    db.executeSql(query13,[this.prefolioIni])
                       
                       
                     

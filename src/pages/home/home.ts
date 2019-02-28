@@ -80,7 +80,7 @@ export class HomePage {
     private notaVenta: NotaVentaProvider)  {
       SqlServer.init("172.16.22.8", "SQLSERVER", "sa", "TuLucernita2017", "SistemaComercial", function(event) {
         //alert(JSON.stringify(event));
-        console.log(JSON.stringify(event))
+        
       }, function(error) {
         alert(JSON.stringify(error));
       });
@@ -100,7 +100,7 @@ export class HomePage {
   { 
     this.buscarImpresora(); //Buscar impresora conectada por Bluetooth desde que se abre la pagina para que este lista al imprimir
    
-    console.log('Hello SqlUpProvider Provider');
+    
   
 
 
@@ -116,7 +116,7 @@ export class HomePage {
 
     
     this.online.getStatus().subscribe(res =>{
-      console.log(res.result[0].estatus);
+      //console.log(res.result[0].estatus);
       if(res.result[0].estatus == "online"){
         
         this.subirSQL()
@@ -176,7 +176,7 @@ export class HomePage {
         {
           text: 'Cerrar',
           handler: dataR =>{
-          console.log('Reimpre cancelado');
+         // console.log('Reimpre cancelado');
           }
       },
       {
@@ -211,7 +211,7 @@ export class HomePage {
         {
           text: 'Cerrar',
           handler: dataR =>{
-          console.log('Reimpre cancelado');
+          //console.log('Reimpre cancelado');
           }
       },
       {
@@ -238,7 +238,7 @@ export class HomePage {
       location: 'default'
     }).then((db: SQLiteObject) => {
       
-      console.log(this.notaCaptu);
+      //console.log(this.notaCaptu);
 
       this.notaVtaSQL = [];
       db.executeSql('SELECT NV_NOTA, NV_CLIENTE, NV_FECHA, NV_RUTA, NV_TIPO_VENTA, NV_SUBTOTAL, NV_IVA, NV_IEPS, NV_RECONOCIMIENTO, NV_TOTAL,NV_ESTATUS_NOTA, NV_KILOLITROS_VENDIDOS  FROM tb_hh_nota_venta WHERE NV_NOTA=?', [this.notaCaptu])
@@ -286,7 +286,7 @@ export class HomePage {
  
    
       this.clientesSQL = [];
-      console.log(this.clienteNota);
+      //console.log(this.clienteNota);
       db.executeSql('SELECT CL_CLIENTE, CL_NOMNEGOCIO, CL_PUNTOVENTA, CL_RFC, CL_DIRNEGOCIO, CL_COLNEGOCIO, CL_CPCLIE, CL_CORPORACION , CL_CIUDADNEGOCIO FROM clientes WHERE CL_CLIENTE=?', [this.clienteNota])
       .then(res => {
     
@@ -321,7 +321,7 @@ export class HomePage {
              })
          }
         
-        console.log (this.notaVtaDetaSQL);
+        //console.log (this.notaVtaDetaSQL);
           }).then(res=>{
 
           if(this.tipoOperacion=='R') //si la operacion solo es reimprimir
@@ -413,8 +413,8 @@ export class HomePage {
        .then(res => {      
       
          this.SaldoActual.push(res.rows.item(0).IN_CANTIDAD) 
-         console.log(this.SaldoActual.length, 'longitud saldo actual');
-         console.log(this.SaldoActual, 'cantidad en inventario');
+         //console.log(this.SaldoActual.length, 'longitud saldo actual');
+         //console.log(this.SaldoActual, 'cantidad en inventario');
          this.sumarInventario();
 
           }).catch(e => console.log(e));      
@@ -435,7 +435,7 @@ export class HomePage {
    {
     this.SaldoFinal =[]
     for(var p=0; p<this.SaldoActual.length; p++){
-      console.log("entra a for de suma cancel")
+      //console.log("entra a for de suma cancel")
       this.SaldoFinal.push(this.SaldoActual[p] + this.notaVtaDetaSQL[p]['cantidad'])
       console.log(this.SaldoActual[p], '+', this.notaVtaDetaSQL[p]['cantidad'], " cantidades nuevas ", this.SaldoFinal)
     }
@@ -444,9 +444,9 @@ export class HomePage {
        name: 'ionicdb.db',
        location: 'default'
      }).then((db: SQLiteObject) => {
-      console.log("update de saldo de ",this.SaldoFinal)
+      //console.log("update de saldo de ",this.SaldoFinal)
 
-      console.log(this.SaldoFinal)
+     // console.log(this.SaldoFinal)
       for(var i=0; i<this.SaldoFinal.length; i++)
         {
         this.updateSaldoInve = `UPDATE tb_hh_inventario SET IN_CANTIDAD = ? WHERE IN_CLAVE = ?`

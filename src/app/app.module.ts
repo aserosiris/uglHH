@@ -40,6 +40,7 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { SqlUpProvider } from '../providers/sql-up/sql-up';
 import { PedidosProvider } from '../providers/pedidos/pedidos';
 import { OnlineProvider } from '../providers/online/online';
+import { PreprintProvider } from '../providers/preprint/preprint';
 
 
 
@@ -89,7 +90,8 @@ import { OnlineProvider } from '../providers/online/online';
     NotaVentaProvider,
     SqlUpProvider,
     PedidosProvider,
-    OnlineProvider
+    OnlineProvider,
+    PreprintProvider
 
   ]
 })
