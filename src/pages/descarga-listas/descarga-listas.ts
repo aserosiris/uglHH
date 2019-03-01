@@ -342,6 +342,12 @@ export class DescargaListasPage {
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_PreVentaDetalle(DPN_FECHA DATE, DPN_NOTA TEXT, DPN_CLAVE INT, DPN_DESCRIPCION TEXT, DPN_CANTIDAD_PIEZAS REAL, DPN_PRECIO REAL, DPN_IVA REAL, DPN_IEPS REAL, DPN_IMPORTE REAL, DPN_UPLOAD INT)', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
+      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_ventaPre(NVP_NOTA TEXT, NVP_CLIENTE INT, NVP_RAZON_SOCIAL TEXT, NVP_NOMBRE_CLIENTE TEXT, NVP_FECHA DATE, NVP_RUTA INT, NVP_TIPO_VENTA TEXT, NVP_SUBTOTAL REAL, NVP_IVA REAL, NVP_IEPS REAL, NVP_RECONOCIMIENTO REAL, NVP_TOTAL REAL, NVP_CORPO_CLIENTE INT, NVP_ESTATUS_NOTA TEXT, NVP_KILOLITROS_VENDIDOS REAL, NVP_UPLOAD INT )', [])
+      .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e))
+      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_detallePre(DNP_FECHA DATE, DNP_NOTA TEXT, DNP_CLAVE INT, DNP_DESCRIPCION TEXT, DNP_CANTIDAD_PIEZAS REAL, DNP_PRECIO REAL, DNP_IVA REAL, DNP_IEPS REAL, DNP_IMPORTE REAL, DNP_UPLOAD INT)', [])
+      .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e));
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_folioPre(FLP_ULTIMO_FOLIO TEXT)', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));

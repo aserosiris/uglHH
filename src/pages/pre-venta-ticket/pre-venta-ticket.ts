@@ -67,6 +67,7 @@ export class PreVentaTicketPage {
 
     InsertaVta:string; //inserta los datos de la nota de venta en la tabla de SQLite
     InsertaDetaVta:string;
+    tipoTicket:string;
 
     //variable para fecha
     fechaActual=new Date();
@@ -321,7 +322,8 @@ this.fechaHoraFinal= this.fechaActual.toLocaleDateString('en-GB')+" "+this.horaF
               text: 'No',
               handler: () => {
                   alert.dismiss(false);
-                  this.nav.setRoot("HomePage");
+                  this.tipoTicket ='si'
+                  this.nav.setRoot("HomePage",{tipoticket:this.tipoTicket});
                   return false;
                   
               }
@@ -355,8 +357,10 @@ this.fechaHoraFinal= this.fechaActual.toLocaleDateString('en-GB')+" "+this.horaF
           }, {
               text: 'No',
               handler: () => {
+                 this.Storage.set('preventa', 'si');
                   alert.dismiss(false);
-                  this.nav.setRoot("HomePage");
+                  this.tipoTicket ='si';
+                  this.nav.setRoot("HomePage",{tipoticket:this.tipoTicket})
                   return false;
                   
               }

@@ -46,7 +46,9 @@ export class HomePage {
   vendedor:Number;
   nomVendedor: string;
   detalleVenta
+  detallePreventa
   notaVenta1
+  notaPreventa1
   tipoImpresion:string;
   tipoOperacion:string;
   updateEstatus:string; //para update
@@ -65,8 +67,7 @@ export class HomePage {
   reconocimientoDespues:number; //valor despues de agregar monto cancelado
   updateReconocimiento:string;
   ReconocimientoCancel:number;
-  folio:string;
-  folioOG:string;
+  tipoticket:string;
   sqlites:any = null;
 
   constructor(public navCtrl: NavController,private modalCtrl:ModalController,
@@ -90,8 +91,9 @@ export class HomePage {
       //setTimeout(() => { clearInterval(timerId); alert('stop'); }, 5000);
 
      this.rutaNum= navParams.get('email');
-     this.folio = navParams.get('folio');
-     this.folioOG = navParams.get('folioOG')
+   
+     this.tipoticket =navParams.get('tipoticket')
+
   }
 
 
@@ -106,6 +108,7 @@ export class HomePage {
 
   }
   ionViewDidEnter(){
+    console.log(this.tipoticket,'esta es preventa')
     /*
     SqlServer.testConnection(function(event) {
       alert(JSON.stringify(event));
@@ -118,8 +121,13 @@ export class HomePage {
     this.online.getStatus().subscribe(res =>{
       //console.log(res.result[0].estatus);
       if(res.result[0].estatus == "online"){
+        if(this.tipoticket = 'si'){
+          console.log('has hecho una preventa')
+        }else{
+          this.subirSQL()
+        }
         
-        this.subirSQL()
+        
       }
       err => console.log(err, 'consolelog')
     })
@@ -585,6 +593,9 @@ export class HomePage {
   
   })
 }
+
+
+
 updateNV(){
   this.sqlite.create({
     name: 'ionicdb.db',
@@ -663,5 +674,155 @@ updateDN(){
 })
 
 }
+
+/************Preventa CODIGO DEL DIABLO LESBIANO****************** */
+subirPreSQL(){
+  this.sqlite.create({
+    name: 'ionicdb.db',
+    location: 'default'
+}).then((db: SQLiteObject) => {
+var sqlquery = `SELECT * FROM tb_hh_nota_PreVenta WHERE NPV_UPLOAD = 0`
+return db.executeSql(sqlquery,[])
+}).then(res =>{
+//  console.log(res.rows.length)
+  if(res.rows.length >0){
+    this.notaPreventa1 =[];
+    for(var i=0; i<res.rows.length; i++){
+      this.notaPreventa1.push({
+        NPV_NOTA:res.rows.item(i).NPV_NOTA,
+        NPV_CLIENTE: res.rows.item(i).NPV_CLIENTE,
+        NPV_RAZON_SOCIAL: res.rows.item(i).NPV_RAZON_SOCIAL,
+        NPV_NOMBRE_CLIENTE: res.rows.item(i).NPV_NOMBRE_CLIENTE,
+        NPV_FECHA: res.rows.item(i).NPV_FECHA,
+        NPV_RUTA: res.rows.item(i).NPV_RUTA,
+        NPV_TIPO_VENTA: res.rows.item(i).NPV_TIPO_VENTA,
+        NPV_SUBTOTAL: res.rows.item(i).NPV_SUBTOTAL,
+        NPV_IVA: res.rows.item(i).NPV_IVA,
+        NPV_IEPS: res.rows.item(i).NPV_IEPS,
+        NPV_RECONOCIMIENTO: res.rows.item(i).NPV_RECONOCIMIENTO,
+        NPV_TOTAL: res.rows.item(i).NPV_TOTAL,
+        NPV_CORPO_CLIENTE: res.rows.item(i).NPV_CORPO_CLIENTE,
+        NPV_ESTATUS_NOTA: res.rows.item(i).NPV_ESTATUS_NOTA,
+        NPV_KILOLITROS_VENDIDOS: res.rows.item(i).NPV_KILOLITROS_VENDIDOS,
+        NPV_UPLOAD: res.rows.item(i).NPV_UPLOAD
+      })
+      
+      
+        console.log(this.notaPreventa1,'info vta')
+      
+        
+
+         //this.insertDetalleSQL()
+             
+      
+      }
+      if (res.rows.length == this.notaPreventa1.length){
+        return this.notaPreventa1
+      }
+
+}else{
+  console.log('no hay shiet')
+}
+}).then((db: SQLiteObject) =>{
+  this.db = db;
+  console.log(this.notaPreventa1,'el then al final')
+  for(var e=0; e<this.notaPreventa1.length; e++){
+    console.log('dentro del for insert')
+SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTA (NPV_NOTA, NPV_CLIENTE ,NPV_RAZON_SOCIAL ,NPV_NOMBRE_CLIENTE ,NPV_FECHA,NPV_RUTA,NPV_TIPO_VENTA,NPV_SUBTOTAL,NPV_IVA,NPV_IEPS,NPV_RECONOCIMIENTO,NPV_TOTAL ,NPV_CORPO_CLIENTE,NPV_ESTATUS_NOTA,NPV_KILOLITROS_VENDIDOS ,NPV_UPLOAD)  VALUES('"+this.notaVenta1[e]["NV_NOTA"]+"',"+this.notaVenta1[e]["NV_CLIENTE"]+",'"+this.notaVenta1[e]["NV_RAZON_SOCIAL"]+"','"+this.notaVenta1[e]["NV_NOMBRE_CLIENTE"]+"','"+this.notaPreventa1[e]["NV_FECHA"]+"',"+this.notaPreventa1[e]["NV_RUTA"]+",'"+this.notaPreventa1[e]["NV_TIPO_VENTA"]+"',"+this.notaPreventa1[e]["NV_SUBTOTAL"]+","+this.notaPreventa1[e]["NV_IVA"]+","+this.notaPreventa1[e]["NV_IEPS"]+","+this.notaPreventa1[e]["NV_RECONOCIMIENTO"]+","+this.notaPreventa1[e]["NV_TOTAL"]+","+this.notaPreventa1[e]["NV_CORPO_CLIENTE"]+",'"+this.notaPreventa1[e]["NV_ESTATUS_NOTA"]+"',"+this.notaPreventa1[e]["NV_KILOLITROS_VENDIDOS"]+","+this.notaPreventa1[e]["NV_UPLOAD"]+")", function(event) {    
+ 
+   // alert("Update complete : " + JSON.stringify(event));
+   
+  }, function(error) {
+    alert("Error : " + JSON.stringify(error));
+  });
+  //this.updateNV()
+  
+}
+this.updateNPV()
+})
+}
+
+
+
+updateNPV(){
+this.sqlite.create({
+  name: 'ionicdb.db',
+  location: 'default'
+}).then((db: SQLiteObject) => {
+for(var e=0;e<this.notaPreventa1.length; e++){
+var sqlquery2 ='UPDATE tb_hh_nota_PreVenta SET  NPV_UPLOAD = 1 WHERE NPV_NOTA =?'
+db.executeSql(sqlquery2, [this.notaPreventa1[e]["NPV_NOTA"]])
+}
+this.insertPreDetalleSQL()
+})
+}
+
+insertPreDetalleSQL(){
+  this.sqlite.create({
+    name: 'ionicdb.db',
+    location: 'default'
+}).then((db: SQLiteObject) => {
+console.log("hey oh!")
+ // console.log(this.notaVenta1[e]['NV_NOTA'])
+  var sqlquery2 = "SELECT * FROM tb_hh_nota_PreVentaDetalle WHERE DPN_UPLOAD = 0"
+  return db.executeSql(sqlquery2,[])
+  
+}).then(res =>{
+   // console.log(res.rows.item(0).DN_NOTA)
+    this.detallePreventa =[]
+    for(var i=0; i<res.rows.length; i++){
+      this.detallePreventa.push({
+        DN_FECHA:res.rows.item(i).DN_FECHA,
+        DN_NOTA:res.rows.item(i).DN_NOTA,
+        DN_CLAVE:res.rows.item(i).DN_CLAVE,
+        DN_DESCRIPCION:res.rows.item(i).DN_DESCRIPCION,
+        DN_CANTIDAD_PIEZAS:res.rows.item(i).DN_CANTIDAD_PIEZAS,
+        DN_PRECIO:res.rows.item(i).DN_PRECIO,
+        DN_IVA:res.rows.item(i).DN_IVA,
+        DN_IEPS:res.rows.item(i).DN_IEPS,
+        DN_IMPORTE:res.rows.item(i).DN_IMPORTE,
+        DN_UPLOAD:res.rows.item(i).DN_UPLOAD
+      })
+    } 
+    if(res.rows.length == this.detallePreventa.length){
+      console.log(this.detallePreventa,'regresa detalle de venta')
+      return this.detallePreventa;
+    }
+  })
+   .then(res =>{
+      
+      for(var f=0; f<this.detallePreventa.length; f++){
+        console.log(this.detallePreventa,'detalle vta')
+      SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTA_DETALLE (DPN_FECHA,DPN_NOTA ,DPN_CLAVE,DPN_DESCRIPCION,DPN_CANTIDAD_PIEZAS,DPN_PRECIO,DPN_IVA,DPN_IEPS,DPN_IMPORTE,DPN_UPLOAD) VALUES('"+this.detallePreventa[f]["DPN_FECHA"]+"','"+this.detallePreventa[f]["DPN_NOTA"]+"',"+this.detallePreventa[f]["DPN_CLAVE"]+",'"+this.detallePreventa[f]["DPN_DESCRIPCION"]+"',"+this.detallePreventa[f]["DPN_CANTIDAD_PIEZAS"]+","+this.detallePreventa[f]["DPN_PRECIO"]+","+this.detallePreventa[f]["DPN_IVA"]+","+this.detallePreventa[f]["DPN_IEPS"]+","+this.detallePreventa[f]["DPN_IMPORTE"]+","+this.detallePreventa[f]["DPN_UPLOAD"]+")", function(event) {    
+ 
+        //alert("Update complete detalle : " + JSON.stringify(event));
+       
+      }, function(error) {
+        alert("Error : " + JSON.stringify(error));
+      });
+      
+      }
+      this.updateDPN()
+      
+})
+   
+}
+
+updateDPN(){
+this.sqlite.create({
+  name: 'ionicdb.db',
+  location: 'default'
+}).then((db: SQLiteObject) => {
+console.log("llega a update del detalle upload")
+for(var e=0;e<this.detallePreventa.length; e++){
+  var sqlupdate = `UPDATE tb_hh_nota_PreVentaDetalle SET DPN_UPLOAD = 1 WHERE DPN_NOTA = ?`
+  db.executeSql(sqlupdate,[this.detallePreventa[e]['DPN_NOTA']])
+}
+
+})
+
+}
+
+/***************************************************************** */
 
 }
