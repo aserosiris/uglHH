@@ -79,8 +79,8 @@ export class HomePage {
     public online:OnlineProvider,
   // private SqlUpProvider: SqlUpProvider,
     private notaVenta: NotaVentaProvider)  {
-      SqlServer.init("172.16.22.8", "SQLSERVER", "sa", "TuLucernita2017", "SistemaComercial", function(event) {
-        //alert(JSON.stringify(event));
+      SqlServer.init("201.174.70.186", "SQLSERVER", "sa", "TuLucernita2017", "SistemaComercial", function(event) {
+       // alert(JSON.stringify(event));
         
       }, function(error) {
         alert(JSON.stringify(error));
@@ -101,28 +101,25 @@ export class HomePage {
   ionViewDidLoad() 
   { 
     this.buscarImpresora(); //Buscar impresora conectada por Bluetooth desde que se abre la pagina para que este lista al imprimir
-   
-    
-  
-
 
   }
   ionViewDidEnter(){
     console.log(this.tipoticket,'esta es preventa')
-    /*
+   
     SqlServer.testConnection(function(event) {
       alert(JSON.stringify(event));
     }, function(error) {
       alert("Error : " + JSON.stringify(error));
     });				
-    */
+   
 
     
     this.online.getStatus().subscribe(res =>{
       //console.log(res.result[0].estatus);
       if(res.result[0].estatus == "online"){
-        if(this.tipoticket = 'si'){
+        if(this.tipoticket == 'si'){
           console.log('has hecho una preventa')
+          this.subirPreSQL()
         }else{
           this.subirSQL()
         }
@@ -616,7 +613,7 @@ updateNV(){
 }).then((db: SQLiteObject) => {
   console.log("hey oh!")
    // console.log(this.notaVenta1[e]['NV_NOTA'])
-    var sqlquery2 = "SELECT * FROM tb_hh_nota_detalle"
+    var sqlquery2 = "SELECT * FROM tb_hh_nota_detalle where DN_UPLOAD = 0"
     return db.executeSql(sqlquery2,[])
     
 }).then(res =>{
@@ -728,9 +725,9 @@ return db.executeSql(sqlquery,[])
   console.log(this.notaPreventa1,'el then al final')
   for(var e=0; e<this.notaPreventa1.length; e++){
     console.log('dentro del for insert')
-SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTA (NPV_NOTA, NPV_CLIENTE ,NPV_RAZON_SOCIAL ,NPV_NOMBRE_CLIENTE ,NPV_FECHA,NPV_RUTA,NPV_TIPO_VENTA,NPV_SUBTOTAL,NPV_IVA,NPV_IEPS,NPV_RECONOCIMIENTO,NPV_TOTAL ,NPV_CORPO_CLIENTE,NPV_ESTATUS_NOTA,NPV_KILOLITROS_VENDIDOS ,NPV_UPLOAD)  VALUES('"+this.notaVenta1[e]["NV_NOTA"]+"',"+this.notaVenta1[e]["NV_CLIENTE"]+",'"+this.notaVenta1[e]["NV_RAZON_SOCIAL"]+"','"+this.notaVenta1[e]["NV_NOMBRE_CLIENTE"]+"','"+this.notaPreventa1[e]["NV_FECHA"]+"',"+this.notaPreventa1[e]["NV_RUTA"]+",'"+this.notaPreventa1[e]["NV_TIPO_VENTA"]+"',"+this.notaPreventa1[e]["NV_SUBTOTAL"]+","+this.notaPreventa1[e]["NV_IVA"]+","+this.notaPreventa1[e]["NV_IEPS"]+","+this.notaPreventa1[e]["NV_RECONOCIMIENTO"]+","+this.notaPreventa1[e]["NV_TOTAL"]+","+this.notaPreventa1[e]["NV_CORPO_CLIENTE"]+",'"+this.notaPreventa1[e]["NV_ESTATUS_NOTA"]+"',"+this.notaPreventa1[e]["NV_KILOLITROS_VENDIDOS"]+","+this.notaPreventa1[e]["NV_UPLOAD"]+")", function(event) {    
+SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTA (NPV_NOTA, NPV_CLIENTE ,NPV_RAZON_SOCIAL ,NPV_NOMBRE_CLIENTE ,NPV_FECHA,NPV_RUTA,NPV_TIPO_VENTA,NPV_SUBTOTAL,NPV_IVA,NPV_IEPS,NPV_RECONOCIMIENTO,NPV_TOTAL ,NPV_CORPO_CLIENTE,NPV_ESTATUS_NOTA,NPV_KILOLITROS_VENDIDOS ,NPV_UPLOAD)  VALUES('"+this.notaPreventa1[e]["NV_NOTA"]+"',"+this.notaPreventa1[e]["NV_CLIENTE"]+",'"+this.notaPreventa1[e]["NV_RAZON_SOCIAL"]+"','"+this.notaPreventa1[e]["NV_NOMBRE_CLIENTE"]+"','"+this.notaPreventa1[e]["NV_FECHA"]+"',"+this.notaPreventa1[e]["NV_RUTA"]+",'"+this.notaPreventa1[e]["NV_TIPO_VENTA"]+"',"+this.notaPreventa1[e]["NV_SUBTOTAL"]+","+this.notaPreventa1[e]["NV_IVA"]+","+this.notaPreventa1[e]["NV_IEPS"]+","+this.notaPreventa1[e]["NV_RECONOCIMIENTO"]+","+this.notaPreventa1[e]["NV_TOTAL"]+","+this.notaPreventa1[e]["NV_CORPO_CLIENTE"]+",'"+this.notaPreventa1[e]["NV_ESTATUS_NOTA"]+"',"+this.notaPreventa1[e]["NV_KILOLITROS_VENDIDOS"]+","+this.notaPreventa1[e]["NV_UPLOAD"]+")", function(event) {    
  
-   // alert("Update complete : " + JSON.stringify(event));
+    alert("Update complete : " + JSON.stringify(event));
    
   }, function(error) {
     alert("Error : " + JSON.stringify(error));
@@ -772,16 +769,16 @@ console.log("hey oh!")
     this.detallePreventa =[]
     for(var i=0; i<res.rows.length; i++){
       this.detallePreventa.push({
-        DN_FECHA:res.rows.item(i).DN_FECHA,
-        DN_NOTA:res.rows.item(i).DN_NOTA,
-        DN_CLAVE:res.rows.item(i).DN_CLAVE,
-        DN_DESCRIPCION:res.rows.item(i).DN_DESCRIPCION,
-        DN_CANTIDAD_PIEZAS:res.rows.item(i).DN_CANTIDAD_PIEZAS,
-        DN_PRECIO:res.rows.item(i).DN_PRECIO,
-        DN_IVA:res.rows.item(i).DN_IVA,
-        DN_IEPS:res.rows.item(i).DN_IEPS,
-        DN_IMPORTE:res.rows.item(i).DN_IMPORTE,
-        DN_UPLOAD:res.rows.item(i).DN_UPLOAD
+        DPN_FECHA:res.rows.item(i).DPN_FECHA,
+        DPN_NOTA:res.rows.item(i).DPN_NOTA,
+        DPN_CLAVE:res.rows.item(i).DPN_CLAVE,
+        DPN_DESCRIPCION:res.rows.item(i).DPN_DESCRIPCION,
+        DPN_CANTIDAD_PIEZAS:res.rows.item(i).DPN_CANTIDAD_PIEZAS,
+        DPN_PRECIO:res.rows.item(i).DPN_PRECIO,
+        DPN_IVA:res.rows.item(i).DPN_IVA,
+        DPN_IEPS:res.rows.item(i).DPN_IEPS,
+        DPN_IMPORTE:res.rows.item(i).DPN_IMPORTE,
+        DPN_UPLOAD:res.rows.item(i).DPN_UPLOAD
       })
     } 
     if(res.rows.length == this.detallePreventa.length){
@@ -793,7 +790,7 @@ console.log("hey oh!")
       
       for(var f=0; f<this.detallePreventa.length; f++){
         console.log(this.detallePreventa,'detalle vta')
-      SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTA_DETALLE (DPN_FECHA,DPN_NOTA ,DPN_CLAVE,DPN_DESCRIPCION,DPN_CANTIDAD_PIEZAS,DPN_PRECIO,DPN_IVA,DPN_IEPS,DPN_IMPORTE,DPN_UPLOAD) VALUES('"+this.detallePreventa[f]["DPN_FECHA"]+"','"+this.detallePreventa[f]["DPN_NOTA"]+"',"+this.detallePreventa[f]["DPN_CLAVE"]+",'"+this.detallePreventa[f]["DPN_DESCRIPCION"]+"',"+this.detallePreventa[f]["DPN_CANTIDAD_PIEZAS"]+","+this.detallePreventa[f]["DPN_PRECIO"]+","+this.detallePreventa[f]["DPN_IVA"]+","+this.detallePreventa[f]["DPN_IEPS"]+","+this.detallePreventa[f]["DPN_IMPORTE"]+","+this.detallePreventa[f]["DPN_UPLOAD"]+")", function(event) {    
+      SqlServer.execute("INSERT INTO TB_HH_NOTA_PREVENTADETALLE (DPN_FECHA,DPN_NOTA ,DPN_CLAVE,DPN_DESCRIPCION,DPN_CANTIDAD_PIEZAS,DPN_PRECIO,DPN_IVA,DPN_IEPS,DPN_IMPORTE,DPN_UPLOAD) VALUES('"+this.detallePreventa[f]["DPN_FECHA"]+"','"+this.detallePreventa[f]["DPN_NOTA"]+"',"+this.detallePreventa[f]["DPN_CLAVE"]+",'"+this.detallePreventa[f]["DPN_DESCRIPCION"]+"',"+this.detallePreventa[f]["DPN_CANTIDAD_PIEZAS"]+","+this.detallePreventa[f]["DPN_PRECIO"]+","+this.detallePreventa[f]["DPN_IVA"]+","+this.detallePreventa[f]["DPN_IEPS"]+","+this.detallePreventa[f]["DPN_IMPORTE"]+","+this.detallePreventa[f]["DPN_UPLOAD"]+")", function(event) {    
  
         //alert("Update complete detalle : " + JSON.stringify(event));
        

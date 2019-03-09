@@ -20,7 +20,7 @@ import { daysInMonth } from 'ionic-angular/umd/util/datetime-util';
 
 
 
-
+declare var SqlServer: any;
 @IonicPage()
 @Component({
   selector: 'page-descarga-listas',
@@ -80,9 +80,10 @@ export class DescargaListasPage {
   asistencias:any;
   nombresVendedores: any=[];
   consulta2: string;
-  db: SQLiteObject; // ADDED
+  db:SQLiteObject; // ADDED
   numReloj
   datos =[]
+  
 
   //variable para fecha
   fechaActual2=new Date();
@@ -96,6 +97,9 @@ export class DescargaListasPage {
   m='';
   s='';
   horaFinal=''; //concatenado de todas las partes que conforman la hora
+
+  queFUNCIONE
+  quefuncionechinga
 
   
 
@@ -119,17 +123,33 @@ export class DescargaListasPage {
       this.cargasIniciales = this.navParams.get('cargasIniciales');
       this.promos = this.navParams.get('promos');
       this.pedidos = this.navParams.get('pedidos'); 
+
+
+      SqlServer.init("201.174.70.186", "SQLSERVER", "sa", "TuLucernita2017", "SistemaComercial", function(event) {
+        // alert(JSON.stringify(event));
+         
+       }, function(error) {
+         alert(JSON.stringify(error));
+       });
+
+        
+
+
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DescargaListasPage');
     //this.getData()
     this.getAsistencia();   
+
+
     
   }
 
   ionViewDidEnter(){
    //this.getJSON();
+
   
    
   }
@@ -154,6 +174,7 @@ export class DescargaListasPage {
     this.Storage.get('useremail').then((val) =>{
       this.rutamail = parseInt(val);
       console.log(this.rutamail)
+    
 
 
         
@@ -327,9 +348,7 @@ export class DescargaListasPage {
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_inventario(IN_RUTA INT, IN_CLAVE INT, IN_GRUPO INT, IN_CANTIDAD INT,IN_TIPO_MOV INT,IN_USUARIO_REGISTRO INT, IN_SUCURSAL INT, IN_EMPRESA INT )', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
-      db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_folio(FL_ULTIMO_FOLIO TEXT)', [])
-      .then(res => console.log('Executed SQL'))
-      .catch(e => console.log(e));
+      
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_nota_venta(NV_NOTA TEXT, NV_CLIENTE INT, NV_RAZON_SOCIAL TEXT, NV_NOMBRE_CLIENTE TEXT, NV_FECHA DATE, NV_RUTA INT, NV_TIPO_VENTA TEXT, NV_SUBTOTAL REAL, NV_IVA REAL, NV_IEPS REAL, NV_RECONOCIMIENTO REAL, NV_TOTAL REAL, NV_CORPO_CLIENTE INT, NV_ESTATUS_NOTA TEXT, NV_KILOLITROS_VENDIDOS REAL, NV_UPLOAD INT )', [])
       .then(res => console.log('Executed SQL'))
       .catch(e => console.log(e));
@@ -350,6 +369,12 @@ export class DescargaListasPage {
       .catch(e => console.log(e));
       db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_folioPre(FLP_ULTIMO_FOLIO TEXT)', [])
       .then(res => console.log('Executed SQL'))
+      .catch(e => console.log(e));
+      this.db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_folio(FL_ULTIMO_FOLIO TEXT)', [])
+      .then(res => console.log('Executed SQL folio'))
+      .catch(e => console.log(e));
+      this.db.executeSql('CREATE TABLE IF NOT EXISTS tb_hh_ultimo_folio(FL_ULTIMO_FOLIO TEXT, FECHA DATE)', [])
+      .then(res => console.log('Executed SQL folio'))
       .catch(e => console.log(e));
 
       
@@ -624,9 +649,12 @@ export class DescargaListasPage {
                      console.log(this.prefolioIni+ '      ->prefolio Inicializado');
 
 
-                     
-                    var query12 = "INSERT INTO tb_hh_folio(FL_ULTIMO_FOLIO)VALUES (?)"
+
+                     var query12 = "INSERT INTO tb_hh_folio(FL_ULTIMO_FOLIO)VALUES (?)"
                       db.executeSql(query12,[this.folioIni]);
+                      
+                     
+                    
                     
                     var query13 = "INSERT INTO tb_hh_folioPre(FLP_ULTIMO_FOLIO)VALUES (?)"
                     db.executeSql(query13,[this.prefolioIni])
@@ -640,6 +668,60 @@ export class DescargaListasPage {
       })
       
    }
+
+   folioCambio(){
+     
+    return  SqlServer.executeQuery(`SELECT TOP 1 NV_NOTA FROM TB_HH_NOTA_VENTA WHERE NV_FECHA = CAST(GETDATE() AS Date) AND NV_RUTA =`+this.rutamail+`  ORDER BY NV_NOTA DESC `, function(event) {
+      /*
+      var folio=JSON.stringify(event)
+      console.log(folio)
+
+      if(folio !='"[[]]"'){
+        
+        const folioTrim = folio.replace(/[.*+?^${}()|[\]\\]/g,' ');
+        const folio2 = folioTrim.replace(/"/g,' ');
+        const stringlimpio = folio2.replace(/\s/g, "")
+        const parts = stringlimpio.split(':',2)
+        const el_foliokun = parts[1];
+        return el_foliokun
+        
+         
+      }else{
+        var query12 = "INSERT INTO tb_hh_folio(FL_ULTIMO_FOLIO)VALUES (?)"
+     // db.executeSql(query12,[this.folioIni]);
+      }
+     */
+    }, function(error) {
+      alert("Error : " + JSON.stringify(error));
+    })
+   
+   }
+
+   mangeku(){
+    this.folioCambio().then(res =>{
+      var folio=JSON.stringify(res)
+      console.log(folio)
+
+      if(folio !='"[[]]"'){
+        
+        const folioTrim = folio.replace(/[.*+?^${}()|[\]\\]/g,' ');
+        const folio2 = folioTrim.replace(/"/g,' ');
+        const stringlimpio = folio2.replace(/\s/g, "")
+        const parts = stringlimpio.split(':',2)
+        const el_foliokun = parts[1];
+        return el_foliokun
+        
+         
+      }else{
+        var query12 = "INSERT INTO tb_hh_folio(FL_ULTIMO_FOLIO)VALUES (?)"
+     // db.executeSql(query12,[this.folioIni]);
+      }
+    })
+   }
+
+
+
+   
 
 
 }

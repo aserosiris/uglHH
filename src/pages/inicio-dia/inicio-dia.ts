@@ -1,3 +1,5 @@
+import { NotapreProvider } from './../../providers/notapre/notapre';
+import { NotaVentaProvider } from './../../providers/nota-venta/nota-venta';
 import { PromosProvider } from './../../providers/promos/promos';
 import { CargaInicialProvider } from './../../providers/carga-inicial/carga-inicial';
 import { ArregloProvider } from './../../providers/arreglo/arreglo';
@@ -14,6 +16,7 @@ import { PrecioProvider } from './../../providers/precio/precio';
 import { PrecioClienteProvider } from './../../providers/precio-cliente/precio-cliente';
 import { Storage } from '@ionic/storage';
 import { PedidosProvider } from './../../providers/pedidos/pedidos';
+
 
 /**
  * Generated class for the InicioDiaPage page.
@@ -57,7 +60,8 @@ export class InicioDiaPage {
   pedidos = [];
 
   cargasIniciales = [];
-
+  notapre
+  detallepre
   promos = [];
   AS_NUMERO_VENDEDOR
   AS_NUMERO_AYUDANTE
@@ -81,6 +85,7 @@ export class InicioDiaPage {
     private PedidosProvider: PedidosProvider,
     private cargaInicial: CargaInicialProvider,
     private view: ViewController,
+    private notaPrem:NotapreProvider,
     private promosiones: PromosProvider) {
       this.getJSON()
   }
@@ -154,7 +159,8 @@ showPrompt(){   //ventana emergente para agregar cantidad de piezas
          arreglos:this.arreglos,
          cargasIniciales:this.cargasIniciales,
          promos:this.promos,
-        pedidos:this.pedidos});
+        pedidos:this.pedidos,
+        notaPre:this.notapre});
 
       }
 
@@ -210,13 +216,17 @@ async getJSON(){
           console.log(res);
           this.promos = res.result;});
 
+    const NotasPres = this.notaPrem.getNotasPre().subscribe(res =>{
+      console.log(res);
+      this.notapre = res.result;});
+
    // const pedidoPromise = this.PedidosProvider.getPedidos().subscribe(res =>{
       //console.log(res)
      // this.pedidos = res.result;});
     
 
     await Promise.all([cliePromise,prodPromise,precioPromise,precliePromise,rutaPromise,
-      vendedoresPromise,revolver,arregloPromise,cargaPromise,PromoPromise]);
+      vendedoresPromise,revolver,arregloPromise,cargaPromise,PromoPromise,NotasPres]);
    }catch(error){
 
     if(error){

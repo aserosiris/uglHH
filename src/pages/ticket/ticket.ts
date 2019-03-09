@@ -57,12 +57,14 @@ export class TicketPage {
    vendedor: Number;
    nomVendedor: string;
  //****************** */
-
+    ultimoFolioGuardado:string;
     ultimoFolio:string;
     consultaFolio:string;
     nuevoStrNota:string; //guarda el nuevo folio de nota en formato string.
     nuevoNumNota:number; // guarda el nuevo folio de nota en formato numerico.
     updateFol:string; //string para el update del folio
+    numNotacomp:number
+    numNotaStrcomp:string
 
     InsertaVta:string; //inserta los datos de la nota de venta en la tabla de SQLite
     InsertaDetaVta:string;
@@ -233,7 +235,7 @@ export class TicketPage {
         text:'Guardar',
         handler: data=>{
           this.restar();
-          this.insertarVenta();
+         // this.insertarVenta();
          
           this.actualizarFolio();
            
@@ -426,15 +428,42 @@ this.fechaHoraFinal= this.fechaActual.toLocaleDateString('en-GB')+" "+this.horaF
         db.executeSql(this.consultaFolio,[]) // string de consulta,[ ] o[ x,x,x,x] segun los ?
         .then(res => {
 
+
+          //***************************************** */
+          db.executeSql(`SELECT FL_ULTIMO_FOLIO FROM tb_hh_ultimo_folio ORDER BY FECHA DESC LIMIT 1`,[]).then(res => {
+            console.log((res.rows.item(0).FL_ULTIMO_FOLIO))
+
+            this.numNotacomp=parseInt(res.rows.item(0).FL_ULTIMO_FOLIO.substring(10));
+           
+              this.numNotacomp=this.numNotacomp+1;
+              this.numNotaStrcomp=this.numNotacomp.toString();
+            if(this.numNotaStrcomp.length==1)
+                 { this.numNotaStrcomp='00'+this.numNotaStrcomp }
+
+            if(this.numNotaStrcomp.length==2)
+                { this.numNotaStrcomp='0'+this.numNotaStrcomp }
+
+                this.ultimoFolioGuardado = this.ultimoFolioGuardado.substring(0,10)+ this.numNotaStrcomp
+            })
+          //****************************************** */
+
           this.ultimoFolio=res.rows.item(0).FL_ULTIMO_FOLIO
-          console.log(this.ultimoFolio +'  folio anterior');  
+          console.log(this.ultimoFolio +'  folio anterior'); 
+          this.ultimoFolioGuardado = res.rows.item(0).FL_ULTIMO_FOLIO
+        
           
          this.nuevoNumNota=parseInt(this.ultimoFolio.substring(10));
+
+        // this.numNotacomp=parseInt(this.ultimoFolio.substring(10));
         
         //calcula el siguiente folio a utilizar sumandole 1+
          this.nuevoNumNota=this.nuevoNumNota+1;
 
+         //this.numNotacomp=this.numNotacomp+1
+
          this.nuevoStrNota=this.nuevoNumNota.toString();
+
+         //this.numNotaStrcomp=this.nuevoNumNota.toString();
 
          // concatena los ceros necesarios para completar la cantidad de caracteres del ticket
          if(this.nuevoStrNota.length==1)
@@ -442,10 +471,21 @@ this.fechaHoraFinal= this.fechaActual.toLocaleDateString('en-GB')+" "+this.horaF
 
          if(this.nuevoStrNota.length==2)
             { this.nuevoStrNota='0'+this.nuevoStrNota }
+
+        // if(this.numNotaStrcomp.length==1)
+        //    { this.numNotaStrcomp='00'+this.numNotaStrcomp }
+
+       //  if(this.numNotaStrcomp.length==2)
+        //    { this.numNotaStrcomp='0'+this.numNotaStrcomp }
+
+
+          
          
            //concatena la parte fija (es fijo  los primeros 10 caracteres) y el valor que incremeta el folio en la nota de venta  (los ultimos 3 caracteres)
            this.ultimoFolio=this.ultimoFolio.substring(0,10)+this.nuevoStrNota;
            console.log(this.ultimoFolio +'  folio nuevo'); 
+
+         //  this.ultimoFolioGuardado = this.ultimoFolioGuardado.substring(0,10)+ this.numNotaStrcomp
                 
            }).catch(e => console.log(e));       
                  
@@ -463,11 +503,58 @@ this.fechaHoraFinal= this.fechaActual.toLocaleDateString('en-GB')+" "+this.horaF
       }).then((db: SQLiteObject) => {
 
          this.updateFol = `UPDATE tb_hh_folio SET FL_ULTIMO_FOLIO= ?`
- 
-         db.executeSql(this.updateFol, [this.ultimoFolio])
-         .catch(e => console.log(e));
-           console.log('update de folio',this.ultimoFolio)   
-           this.Storage.set('folio',this.ultimoFolio)
+         var ultFolio =`INSERT INTO tb_hh_ultimo_folio(FL_ULTIMO_FOLIO, FECHA ) VALUES(?,?)  `
+        var fechaFolio = `SELECT FL_ULTIMO_FOLIO FROM tb_hh_ultimo_folio WHERE FECHA =?`
+        var updatefolio = `UPDATE tb_hh_ultimo_folio SET FL_ULTIMO_FOLIO =?, FECHA =?`
+
+        db.executeSql(fechaFolio,[this.fechaActual.toLocaleDateString('en-GB')])
+        .then(res =>{
+          console.log(res,"resultado de select")
+          console.log(res.rows.length," tamanio de select")
+          if(res.rows.length == 0){
+           console.log("WE ARE HERE NIGGA!")
+            db.executeSql(ultFolio,[this.ultimoFolio,this.fechaActual.toLocaleDateString('en-GB')])
+            .catch(e => console.log(e,"se inserto el folio")).then(res=>{
+              this.insertarVenta()
+            })
+          }else{
+            db.executeSql(`SELECT FL_ULTIMO_FOLIO FROM tb_hh_ultimo_folio ORDER BY FECHA DESC LIMIT 1`,[]).then(res => {
+              console.log((res.rows.item(0).FL_ULTIMO_FOLIO))
+
+              var guardadosql =parseInt(res.rows.item(0).FL_ULTIMO_FOLIO.substring(10));
+             
+              if(guardadosql >=this.nuevoNumNota ){
+
+                db.executeSql(this.updateFol, [this.ultimoFolioGuardado])
+                .catch(e => console.log(e));
+                db.executeSql(updatefolio,[this.ultimoFolioGuardado,this.fechaActual.toLocaleDateString('en-GB')]).then(res =>{
+
+                  this.ultimoFolio = this.ultimoFolioGuardado;
+                  console.log('update de folio guardado',this.ultimoFolioGuardado)   
+                  this.Storage.set('folio',this.ultimoFolioGuardado)
+
+                  this.insertarVenta()
+                })
+               
+              }else{
+
+                db.executeSql(this.updateFol, [this.ultimoFolio])
+                .catch(e => console.log(e));
+       
+                  console.log('update de folio',this.ultimoFolio)   
+                  this.Storage.set('folio',this.ultimoFolio)
+                db.executeSql(updatefolio,[this.ultimoFolio,this.fechaActual.toLocaleDateString('en-GB')])
+                .then(res =>{
+                  this.insertarVenta()
+                })
+
+              }
+            })
+           
+            
+          }
+        })
+
          
        })
       

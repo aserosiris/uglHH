@@ -21,6 +21,7 @@ export class CarritoVtPage {
   productos: Array<any> = []; 
   precios = [];
   NotaVta: Array<any> = []; 
+  preventa: any;
 
   tipRuta
  
@@ -63,6 +64,7 @@ export class CarritoVtPage {
  confirmarSalida:number
 
  nomVendedor: string;
+ detallepre: any;
 
  //version final
   constructor(
@@ -76,6 +78,7 @@ export class CarritoVtPage {
     public Storage:Storage,
 
     ) {
+
 
       this.Storage.get('vendedor').then((val) =>{
         this.vendedor = parseInt(val);
@@ -433,6 +436,39 @@ export class CarritoVtPage {
       reconocimientoSobrante:this.reconocimientoSobrante
        });
     }
+  }
+
+  getPreventa(){
+    this.sqlite.create({
+      name: 'ionicdb.db',
+      location: 'default'
+    }).then((db: SQLiteObject) => {
+      var query =`SELECT NVP_NOTA FROM tb_hh_ventaPre WHERE NVP_CLIENTE = ?`
+      db.executeSql(query,[this.numCliente]).then(res =>{
+        this.preventa=[];
+       
+         return  this.preventa = {NVP_NOTA:res.rows.item(0).NVP_NOTA}
+      
+        }).then(()=>{
+          var quer2 = `SELECT * FROM tb_hh_nota_detallePre WHERE DNP_NOTA =?`
+          db.executeSql(quer2,[this.preventa]).then(res =>{
+            this.productos = [];
+            for(var e = 0; e<res.rows.length; e++){
+              this.productos.push({DNP_FECHA:res.rows.item(e).DNP_FECHA,
+                DNP_NOTA:res.rows.item(e).DNP_NOTA,
+                clave:res.rows.item(e).DNP_CLAVE,
+                DNP_DESCRIPCION:res.rows.item(e).DNP_DESCRIPCION,
+                cantidad:res.rows.item(e).DNP_CANTIDAD_PIEZAS,
+                precio:res.rows.item(e).DNP_PRECIO,
+                iva:res.rows.item(e).DNP_IVA,
+                ieps:res.rows.item(e).DNP_IEPS,
+                importe:res.rows.item(e).DNP_IMPORTE,
+                DNP_UPLOAD:res.rows.item(e).DNP_UPLOAD})
+            }
+
+          })
+        })
+    })
   }
 
 }//FIN1

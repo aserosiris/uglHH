@@ -133,6 +133,41 @@ export class MyApp {
     
   }
 
+
+    //******************************************************************************* */
+
+showPrompt(){   //ventana emergente para agregar cantidad de piezas
+     
+    
+  const prompt = this.alertCtrl.create({
+       
+
+    title:'CERRAR DIA',
+    message:"ALERTA!!! estas por cerrar el dia, NO PODRAS SEGUIR VENDIENDO DESPUES DE ESTO",
+    buttons:[
+      {
+        text: 'No terminar dia',
+        handler: data =>{
+          console.log('cancelado');
+        }
+    },
+    {
+      
+      text:'Terminar dia',
+      handler: data=>{
+        this.logout()
+      }
+
+ 
+    }
+   
+    ]
+  });
+  prompt.present();
+}
+
+//******************************************************************************* */
+
   logout(){
     this.storage.remove('useremail');
     this.nav.setRoot("LoginPage");
@@ -181,10 +216,10 @@ export class MyApp {
       db.executeSql(this.LimpiarInventario,[])
 
       this.LimpiarNotas = `DROP TABLE tb_hh_nota_venta`
-      db.executeSql(this.LimpiarNotas,[])
+     // db.executeSql(this.LimpiarNotas,[])
 
       this.LimpiarDetalleNotas = `DROP TABLE tb_hh_nota_detalle`
-      db.executeSql(this.LimpiarDetalleNotas,[])
+     // db.executeSql(this.LimpiarDetalleNotas,[])
 
       this.LimpiarPedidos = 'DROP TABLE tb_hh_pedidos'
       db.executeSql(this.LimpiarPedidos,[])
