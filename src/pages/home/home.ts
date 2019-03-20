@@ -326,7 +326,7 @@ export class HomePage {
              })
          }
         
-        //console.log (this.notaVtaDetaSQL);
+        console.log (this.notaVtaDetaSQL);
           }).then(res=>{
 
           if(this.tipoOperacion=='R') //si la operacion solo es reimprimir
@@ -418,9 +418,20 @@ export class HomePage {
        .then(res => {      
       
          this.SaldoActual.push(res.rows.item(0).IN_CANTIDAD) 
-         //console.log(this.SaldoActual.length, 'longitud saldo actual');
-         //console.log(this.SaldoActual, 'cantidad en inventario');
+         console.log(this.SaldoActual.length, 'longitud saldo actual');
+         console.log(this.SaldoActual, 'cantidad en inventario');
          this.sumarInventario();
+
+
+         if(this.reconocimientoVta>0)   //si hay reconocimiento aplicado en la nota (debe regresarse tambien)
+     {
+       console.log("soy una nota con reconocimiento")
+        this.consultarReconocimientoClie();}
+
+     if(this.reconocimientoVta == 0)
+     {
+      console.log("no tengo reconocimiento") 
+      this.CambiarEstatusCancelacion();}
 
           }).catch(e => console.log(e));      
        } 
@@ -428,11 +439,7 @@ export class HomePage {
      })
   
 
-     if(this.reconocimientoVta>0)   //si hay reconocimiento aplicado en la nota (debe regresarse tambien)
-     { this.consultarReconocimientoClie();}
-
-     if(this.reconocimientoVta=0)
-     { this.CambiarEstatusCancelacion();}
+     
    
   }
 
@@ -512,6 +519,14 @@ export class HomePage {
 
               this.ReimprimirNota();
         })
+
+        SqlServer.execute("UPDATE TB_HH_NOTA_VENTA SET  NV_ESTATUS_NOTA ='CANCELADA' WHERE NV_NOTA ="+this.notaCaptu+"", function(event) {    
+ 
+          alert("Update complete : " + JSON.stringify(event));
+         
+        }, function(error) {
+          alert("Error : " + JSON.stringify(error));
+        });
     
   }
 

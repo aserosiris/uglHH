@@ -719,6 +719,10 @@ export class DescargaListasPage {
     })
    }
 
+   traspaso(){
+    this.navCtrl.setRoot("TraspasosPage");
+   }
+
 
 
    

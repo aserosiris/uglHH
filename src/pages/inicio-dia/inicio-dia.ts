@@ -67,6 +67,23 @@ export class InicioDiaPage {
   AS_NUMERO_AYUDANTE
   AS_NUMERO_AYUDANTE2
 
+
+  LimpiarClientes:string;
+  LimpiarProductos:string;
+  LimpiarPrecios:string;
+  LimpiarPreciosCliente:string;
+  LimpiarArreglos:string;
+  LimpiarCargaInicial:string;
+  LimpiarRevolvente:string;
+  LimpiarRutas:string;
+  LimpiarUsuarios :string;
+  LimpiarPromos:string;
+  LimpiarFolios: string;
+  LimpiarInventario:string;
+  LimpiarNotas:string;
+  LimpiarDetalleNotas:string;
+  LimpiarPedidos:string;
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public sqlite: SQLite,
@@ -92,6 +109,7 @@ export class InicioDiaPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad InicioDiaPage');
+   
   }
 
   ionViewWillEnter(){
@@ -102,7 +120,7 @@ export class InicioDiaPage {
     });
   }
 
-  //******************************************************************************* */
+  //********************************************************************************/
 
 showPrompt(){   //ventana emergente para agregar cantidad de piezas
      
@@ -146,6 +164,7 @@ showPrompt(){   //ventana emergente para agregar cantidad de piezas
       this.AS_NUMERO_AYUDANTE = data.idAyudante,
       this.AS_NUMERO_AYUDANTE2 = data.idAyudante2
     ]
+    this.borrarSQL()
       //this.objeto = [this.AS_NUMERO_VENDEDOR,this.AS_NUMERO_AYUDANTE, this.AS_NUMERO_AYUDANTE2]
       console.log(this.objeto)
       this.Storage.set('asistencia', this.objeto);
@@ -238,6 +257,62 @@ async getJSON(){
       alert.present();
     }
 }
+}
+
+
+borrarSQL(){
+  this.sqlite.create({
+    name: 'ionicdb.db',
+    location: 'default'
+  }).then((db: SQLiteObject) => {
+
+     this.LimpiarClientes = `DROP TABLE clientes`
+     db.executeSql(this.LimpiarClientes,[])
+
+     this.LimpiarArreglos = `DROP TABLE tb_hh_arreglos`
+     db.executeSql(this.LimpiarArreglos,[])
+
+     this.LimpiarCargaInicial = `DROP TABLE tb_hh_carga_iniciales`
+     db.executeSql(this.LimpiarCargaInicial,[])
+      
+    this.LimpiarPrecios = `DROP TABLE tb_hh_precios`
+    db.executeSql(this.LimpiarPrecios,[])
+
+    this.LimpiarPreciosCliente = `DROP TABLE tb_hh_precio_cliente`
+    db.executeSql(this.LimpiarPreciosCliente,[])
+
+    this.LimpiarProductos = `DROP TABLE  tb_hh_productos`
+    db.executeSql(this.LimpiarProductos,[])
+
+    this.LimpiarRevolvente = `DROP TABLE tb_hh_revolventes`
+    db.executeSql(this.LimpiarRevolvente,[])
+
+    this.LimpiarRutas = `DROP TABLE tb_hh_rutas`
+    db.executeSql(this.LimpiarRutas,[])
+
+    this.LimpiarUsuarios = `DROP TABLE tb_hh_usuarios`
+    db.executeSql(this.LimpiarUsuarios,[])
+
+    this.LimpiarPromos = `DROP TABLE tb_hh_promos`
+    db.executeSql(this.LimpiarPromos,[])
+
+    this.LimpiarFolios = `DROP TABLE tb_hh_folio`
+    db.executeSql(this.LimpiarFolios,[])
+
+    this.LimpiarInventario = `DROP TABLE tb_hh_inventario`
+    db.executeSql(this.LimpiarInventario,[])
+
+    this.LimpiarNotas = `DROP TABLE tb_hh_nota_venta`
+    db.executeSql(this.LimpiarNotas,[])
+
+    this.LimpiarDetalleNotas = `DROP TABLE tb_hh_nota_detalle`
+    db.executeSql(this.LimpiarDetalleNotas,[])
+
+    this.LimpiarPedidos = 'DROP TABLE tb_hh_pedidos'
+    db.executeSql(this.LimpiarPedidos,[])
+
+
+  })
 }
 
 

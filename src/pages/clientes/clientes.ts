@@ -14,7 +14,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 export class ClientesPage {
 
   clientes = [];
-  clientesSQL: any = [];
+  clientesSQL: Array<any> = [];
 
   constructor(
     public navCtrl: NavController, 
@@ -62,6 +62,8 @@ export class ClientesPage {
       this.getData();
     });
   }
+
+  
 
 
   carritoVentas(event, clientesSQL){
